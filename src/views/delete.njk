@@ -1,0 +1,52 @@
+{% from "govuk/components/tag/macro.njk" import govukTag %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% extends "layout.njk" %}
+{% set title = "Delete task" %}
+{% set activeNav = "list" %}
+{% set statusClasses = {
+  "NOT_STARTED": "govuk-tag--grey",
+  "IN_PROGRESS": "govuk-tag--blue",
+  "COMPLETED": "govuk-tag--turquoise"
+} %}
+{% set statusLabels = {
+  "NOT_STARTED": "Not started",
+  "IN_PROGRESS": "In progress",
+  "COMPLETED": "Completed"
+} %}
+{% if task.isOverdue %}
+  {% set overdueTag = ' ' ~ govukTag({ text: "Overdue", classes: "govuk-tag--red" }) %}
+{% else %}
+  {% set overdueTag = '' %}
+{% endif %}
+{% block mainContent %}
+    <a href="/tasks" class="govuk-back-link">Back</a>
+    <h1 class="govuk-heading-l">Are you sure you want to delete this task?</h1>
+    {{ govukSummaryList({
+  rows: [
+    {
+      key: { text: "Title" },
+      value: { text: task.title }
+    },
+    {
+      key: { text: "Description" },
+      value: { text: task.description }
+    },
+    {
+      key: { text: "Due date" },
+      value: { html: task.dueDateFormatted ~ overdueTag }
+    },
+    {
+      key: { text: "Status" },
+      value: { html: govukTag({
+        text: statusLabels[task.status],
+        classes: statusClasses[task.status]
+      }) }
+    }
+  ]
+}) }}
+    <form action="/tasks/{{ task.id }}/delete" method="post">
+        <button class="govuk-button govuk-button--warning" data-module="govuk-button">
+            Delete task
+        </button>
+    </form>
+{% endblock %}

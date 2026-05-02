@@ -1,0 +1,93 @@
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+{% extends "layout.njk" %}
+{% set title = "Add a task" %}
+{% set activeNav = "new" %}
+{% block mainContent %}
+  <a href="/tasks" class="govuk-back-link">Back</a>
+  <h1 class="govuk-heading-l">Add a task</h1>
+  {% if errorSummary and errorSummary.length > 0 %}
+    {{ govukErrorSummary({
+    titleText: "There is a problem",
+    errorList: errorSummary
+  }) }}
+  {% endif %}
+  <form action="/tasks/new" method="post" novalidate>
+    <div class="govuk-form-group{% if errorMessage.title %} govuk-form-group--error{% endif %}">
+      <label class="govuk-label govuk-label--m" for="title">Title</label>
+      {% if errorMessage.title %}
+        <span class="govuk-error-message">
+          <span class="govuk-visually-hidden">Error:</span>
+          {{ errorMessage.title }}
+        </span>
+      {% endif %}
+      <input class="govuk-input govuk-!-width-two-thirds" id="title" name="title" type="text" value="{{ formValues.title | default('') }}"/>
+    </div>
+    <div class="govuk-form-group{% if errorMessage.description %} govuk-form-group--error{% endif %}">
+      <label class="govuk-label govuk-label--m" for="description">Description (optional)</label>
+      {% if errorMessage.description %}
+        <span class="govuk-error-message">
+          <span class="govuk-visually-hidden">Error:</span>
+          {{ errorMessage.description }}
+        </span>
+      {% endif %}
+      <textarea class="govuk-textarea" id="description" name="description" rows="4">{{ formValues.description | default('') }}</textarea>
+    </div>
+    <fieldset
+      class="govuk-fieldset govuk-!-margin-bottom-6"
+      role="group"
+      aria-describedby="due-date-hint{% if errorMessage['due-date'] %} due-date-error{% endif %}">
+      <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+        <h1 class="govuk-fieldset__heading">Due date</h1>
+      </legend>
+      <div id="due-date-hint" class="govuk-hint">
+        For example, 27 3 2026
+      </div>
+      {% if errorMessage['due-date'] %}
+        <span id="due-date-error" class="govuk-error-message">
+          <span class="govuk-visually-hidden">Error:</span>
+          {{ errorMessage['due-date'] }}
+        </span>
+      {% endif %}
+      <div
+        class="govuk-date-input" id="due-date">
+        {# Day Input #}
+        <div class="govuk-date-input__item">
+          <div class="govuk-form-group">
+            <label class="govuk-label govuk-date-input__label" for="due-day">Day</label>
+            {% if errorMessage['due-day'] %}
+              <span class="govuk-error-message" id="due-day-error">
+                <span class="govuk-visually-hidden">Error:</span>
+                {{ errorMessage['due-day'] }}
+              </span>
+            {% endif %}
+            <input class="govuk-input govuk-date-input__input govuk-input--width-2 {% if errorMessage['due-day'] or errorMessage['due-date'] %} govuk-input--error{% endif %}" id="due-day" name="due-day" type="text" inputmode="numeric" value="{{ formValues['due-day'] | default('') }}" aria-describedby="due-date-hint{% if errorMessage['due-day'] %} due-day-error{% elif errorMessage['due-date'] %} due-date-error{% endif %}"></div>
+          </div>
+          {# Month Input #}
+          <div class="govuk-date-input__item">
+            <div class="govuk-form-group">
+              <label class="govuk-label govuk-date-input__label" for="due-month">Month</label>
+              {% if errorMessage['due-month'] %}
+                <span class="govuk-error-message" id="due-month-error">
+                  <span class="govuk-visually-hidden">Error:</span>
+                  {{ errorMessage['due-month'] }}
+                </span>
+              {% endif %}
+              <input class="govuk-input govuk-date-input__input govuk-input--width-2 {% if errorMessage['due-month'] or errorMessage['due-date'] %} govuk-input--error{% endif %}" id="due-month" name="due-month" type="text" inputmode="numeric" value="{{ formValues['due-month'] | default('') }}" aria-describedby="due-date-hint{% if errorMessage['due-month'] %} due-month-error{% elif errorMessage['due-date'] %} due-date-error{% endif %}"></div>
+            </div>
+            {# Year Input #}
+            <div class="govuk-date-input__item">
+              <div class="govuk-form-group">
+                <label class="govuk-label govuk-date-input__label" for="due-year">Year</label>
+                {% if errorMessage['due-year'] %}
+                  <span class="govuk-error-message" id="due-year-error">
+                    <span class="govuk-visually-hidden">Error:</span>
+                    {{ errorMessage['due-year'] }}
+                  </span>
+                {% endif %}
+                <input class="govuk-input govuk-date-input__input govuk-input--width-4 {% if errorMessage['due-year'] or errorMessage['due-date'] %} govuk-input--error{% endif %}" id="due-year" name="due-year" type="text" inputmode="numeric" value="{{ formValues['due-year'] | default('') }}" aria-describedby="due-date-hint{% if errorMessage['due-year'] %} due-year-error{% elif errorMessage['due-date'] %} due-date-error{% endif %}"></div>
+              </div>
+            </div>
+          </fieldset>
+          <button class="govuk-button" data-module="govuk-button">Save</button>
+        </form>
+      {% endblock %}

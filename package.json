@@ -1,0 +1,44 @@
+{
+  "name": "hmcts-challenge",
+  "type": "module",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "prepare": "npx prisma generate",
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "setup": "npx prisma@6 migrate dev",
+    "test": "jest",
+    "test:coverage": "jest --coverage"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@prisma/client": "^6.19.1",
+    "date-fns": "^4.1.0",
+    "express": "^5.2.1",
+    "express-session": "^1.19.0",
+    "govuk-frontend": "^5.13.0",
+    "helmet": "^8.1.0",
+    "nunjucks": "^3.2.4",
+    "prisma": "^6.19.1"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/express-session": "^1.18.2",
+    "@types/jest": "^30.0.0",
+    "@types/node": "^25.0.6",
+    "@types/nunjucks": "^3.2.6",
+    "@types/supertest": "^6.0.3",
+    "jest": "^30.2.0",
+    "nodemon": "^3.1.11",
+    "supertest": "^7.2.2",
+    "ts-jest": "^29.4.6",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3"
+  }
+}

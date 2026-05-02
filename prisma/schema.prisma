@@ -1,0 +1,27 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum TaskStatus {
+  NOT_STARTED
+  IN_PROGRESS
+  COMPLETED
+}
+
+model Task {
+  id          String   @id @default(uuid())
+  title       String
+  description String?
+  status      TaskStatus  @default(NOT_STARTED) // NOT_STARTED, IN_PROGRESS, COMPLETED
+  dueDate     DateTime
+  createdAt   DateTime @default(now())
+  version     Int      @default(1)
+}

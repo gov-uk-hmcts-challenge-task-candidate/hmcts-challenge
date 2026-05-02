@@ -1,0 +1,74 @@
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+{% from "govuk/components/select/macro.njk" import govukSelect %}
+{% extends "layout.njk" %}
+{% set title = "Resolve editing conflict" %}
+{% block mainContent %}
+  {{ govukErrorSummary({
+    titleText: "There is a problem",
+    errorList: errorSummary
+  }) }}
+  <h1 class="govuk-heading-l" id="merge-guidance">Resolve editing conflict</h1>
+  <p class="govuk-body">
+    This task was updated by someone else while you were editing. Please review the differences and choose which version to keep, or edit the fields as needed.
+  </p>
+  <form action="/tasks/{{ latest.id }}/edit" method="post" novalidate>
+    <input type="hidden" name="version" value="{{ latest.version }}">
+    <div class="govuk-form-group">
+      <label class="govuk-label" for="title">Title</label>
+      <div class="govuk-inset-text">
+        <strong>Your change:</strong> {{ attempted.title }}<br>
+        <strong>Latest version:</strong> {{ latest.title }}
+      </div>
+      <input class="govuk-input" id="title" name="title" type="text" value="{{ attempted.title }}">
+    </div>
+    <div class="govuk-form-group">
+      <label class="govuk-label" for="description">Description</label>
+      <div class="govuk-inset-text">
+        <strong>Your change:</strong> {{ attempted.description }}<br>
+        <strong>Latest version:</strong> {{ latest.description }}
+      </div>
+      <textarea class="govuk-textarea" id="description" name="description">{{ attempted.description }}</textarea>
+    </div>
+    <div class="govuk-form-group">
+      <label class="govuk-label" for="status">Status</label>
+      <div class="govuk-inset-text">
+        <strong>Your change:</strong> {{ attempted.status }}<br>
+        <strong>Latest version:</strong> {{ latest.status }}
+      </div>
+      {{ govukSelect({
+        id: "status",
+        name: "status",
+        label: {
+            text: "Status"
+        },
+        items: [
+            { value: "NOT_STARTED", text: "Not started", selected: attempted.status == 'NOT_STARTED' },
+            { value: "IN_PROGRESS", text: "In progress", selected: attempted.status == 'IN_PROGRESS' },
+            { value: "COMPLETED", text: "Completed", selected: attempted.status == 'COMPLETED' }
+        ]
+        }) }}
+    </div>
+    <div class="govuk-form-group">
+      <label class="govuk-label" for="due-day">Due date</label>
+      <div class="govuk-inset-text">
+        <strong>Your change:</strong> {{ attempted.dueDay }}/{{ attempted.dueMonth }}/{{ attempted.dueYear }}<br>
+        <strong>Latest version:</strong> {{ latest.dueDay }}/{{ latest.dueMonth }}/{{ latest.dueYear }}
+      </div>
+      <div class="govuk-date-input" id="due-date">
+        <div class="govuk-date-input__item">
+          <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="due-day" name="due-day" type="text" inputmode="numeric" value="{{ attempted.dueDay }}">
+          <label class="govuk-label govuk-date-input__label" for="due-day">Day</label>
+        </div>
+        <div class="govuk-date-input__item">
+          <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="due-month" name="due-month" type="text" inputmode="numeric" value="{{ attempted.dueMonth }}">
+          <label class="govuk-label govuk-date-input__label" for="due-month">Month</label>
+        </div>
+        <div class="govuk-date-input__item">
+          <input class="govuk-input govuk-date-input__input govuk-input--width-4" id="due-year" name="due-year" type="text" inputmode="numeric" value="{{ attempted.dueYear }}">
+          <label class="govuk-label govuk-date-input__label" for="due-year">Year</label>
+        </div>
+      </div>
+    </div>
+    <button class="govuk-button" data-module="govuk-button">Save merged changes</button>
+  </form>
+{% endblock %}

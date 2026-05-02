@@ -1,0 +1,87 @@
+{% from "govuk/components/tag/macro.njk" import govukTag %}
+{% from "govuk/components/notification-banner/macro.njk" import govukNotificationBanner %}
+
+{% extends "layout.njk" %}
+{% set title = "All tasks" %}
+{% set activeNav = "list" %}
+{% block mainContent %}
+{% if successMessage %}
+  {{ govukNotificationBanner({
+    type: "success",
+    text: successMessage
+  }) }}
+{% endif %}
+{% if errorMessage %}
+  {{ govukNotificationBanner({
+    type: "error",
+    text: errorMessage
+  }) }}
+{% endif %}
+  <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">Your Tasks</h1>
+  <div class="govuk-!-text-align-right govuk-!-margin-bottom-4">
+    <a class="govuk-button" href="/tasks/new">Add a task</a>
+  </div>
+  {% if tasks and tasks.length > 0 %}
+    <table class="govuk-table">
+      <thead class="govuk-table__head">
+        <tr class="govuk-table__row">
+          <th class="govuk-table__header">Title</th>
+          <th class="govuk-table__header">Due date</th>
+          <th class="govuk-table__header">Status</th>
+          <th class="govuk-table__header">Actions</th>
+        </tr>
+      </thead>
+      <tbody class="govuk-table__body">
+        {% for task in tasks %}
+          <tr class="govuk-table__row">
+            <td class="govuk-table__cell">
+              <span class="govuk-!-font-weight-bold">{{ task.title }}</span>
+              <br>
+                {% if task.description %}
+                  <span class="govuk-hint">{{ task.description }}</span>
+                {% else %}
+                  <span class="govuk-hint">No description</span>
+                {% endif %}
+              </td>
+              <td class="govuk-table__cell">
+                <div class="govuk-!-margin-bottom-1">{{ task.dueDateFormatted }}</div>
+                {% if task.isOverdue %}
+                  {{ govukTag({ 
+                    text: "Overdue", 
+                    classes: "govuk-tag--red" 
+                  }) }}
+                {% endif %}
+              </td>
+              <td class="govuk-table__cell">
+                {% if task.status == "NOT_STARTED" %}
+                  {{ govukTag({ text: "Not started", classes: "govuk-tag--grey" }) }}
+                {% elif task.status == "IN_PROGRESS" %}
+                  {{ govukTag({ text: "In progress", classes: "govuk-tag--blue" }) }}
+                {% elif task.status == "COMPLETED" %}
+                  {{ govukTag({ text: "Completed", classes: "govuk-tag--turquoise" }) }}
+                {% else %}
+                  {{ govukTag({ text: task.status }) }}
+                {% endif %}
+              </td>
+              <td class="govuk-table__cell">
+                <ul class="govuk-list govuk-!-margin-bottom-0">
+                  <li>
+                    <a class="govuk-link" href="/tasks/{{ task.id }}/edit" aria-label="Edit {{ task.title }}">
+                      Edit
+                    </a>
+                  </li>
+                  <li>
+                    <a class="govuk-link" href="/tasks/{{ task.id }}/delete" aria-label="Delete {{ task.title }}">
+                      Delete
+                    </a>
+                  </li>
+                </ul>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p class="govuk-body">You have no tasks yet.</p>
+    {% endif %}
+  {% endblock %}
